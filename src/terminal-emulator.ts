@@ -76,7 +76,7 @@ export class TerminalEmulator {
     this.user = user
     this.currentDirectory = currentDirectory
     this.inputHandler = inputHandler
-    this.history = [] // Store input history
+    this.history = []
     this.rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
@@ -111,16 +111,16 @@ export class TerminalEmulator {
    */
   public clearTerminal(): void {
     this.clearScreen()
-    this.history = [] // Reset history
-    this.updatePrompt() // Update prompt after clearing
+    this.history = []
+    this.updatePrompt()
   }
 
   /**
    * Exits the terminal emulator.
    */
   public exit(): void {
-    this.writeToStdout('Exiting terminal emulator...') // Use internal method for exit message
-    this.rl.close() // Close readline interface
+    this.writeToStdout('Exiting terminal emulator...')
+    this.rl.close()
   }
 
   /**
@@ -170,7 +170,7 @@ export class TerminalEmulator {
     const clearCommand = platform === 'win32' ? 'cls' : 'clear'
     exec(clearCommand, (err) => {
       if (err) {
-        this.writeToStderr(`Error clearing screen: ${err}`) // Write error to stderr
+        this.writeToStderr(`Error clearing screen: ${err}`)
       }
     })
   }
@@ -181,13 +181,11 @@ export class TerminalEmulator {
    * @private
    */
   private handleInput(input: string): void {
-    // Store the input in history
     this.history.push(input)
 
     if (this.inputHandler) {
       const output = this.inputHandler(input)
 
-      // Check the type of the output
       if (this.isError(output)) {
         this.printError(output)
       } else if (this.isPlainObject(output)) {
@@ -205,7 +203,7 @@ export class TerminalEmulator {
    * @private
    */
   private isError(output: unknown): output is Error {
-    return output instanceof Error // Check if output is an instance of Error
+    return output instanceof Error
   }
 
   /**
@@ -215,7 +213,7 @@ export class TerminalEmulator {
    * @private
    */
   private isPlainObject(output: unknown): output is object {
-    return output !== null && typeof output === 'object' && !Array.isArray(output) // Check for plain objects
+    return output !== null && typeof output === 'object' && !Array.isArray(output)
   }
 
   /**
@@ -262,7 +260,7 @@ export class TerminalEmulator {
   private wrapText(text: string, width: number): string[] {
     const regex = new RegExp(`(.{1,${width}})(\\s|$)`, 'g')
     const matches = text.match(regex)
-    return matches || [text] // Match wrapped lines or return the original text as a single line
+    return matches || [text]
   }
 
   /**
@@ -279,8 +277,8 @@ export class TerminalEmulator {
    * @private
    */
   private handleSigint(): void {
-    this.rl.write('\n') // Move to the next line
-    this.writeToStdout('(Press Ctrl+D to exit)') // Write to stdout directly
+    this.rl.write('\n')
+    this.writeToStdout('(Press Ctrl+D to exit)')
     this.rl.setPrompt(`${this.user}@server:${this.currentDirectory} (Press Ctrl+D to exit)$ `)
     this.rl.prompt()
   }
@@ -293,9 +291,9 @@ export class TerminalEmulator {
   private writeToStdout(message: string): void {
     const outputMessage = `${message}\n`
     if (this.stdoutStream) {
-      this.stdoutStream.write(outputMessage) // Write to subscribed stream if available
+      this.stdoutStream.write(outputMessage)
     } else {
-      process.stdout.write(outputMessage) // Fallback to standard output
+      process.stdout.write(outputMessage)
     }
   }
 
@@ -307,9 +305,9 @@ export class TerminalEmulator {
   private writeToStderr(message: string): void {
     const errorMessage = `${message}\n`
     if (this.stderrStream) {
-      this.stderrStream.write(errorMessage) // Write to subscribed stream if available
+      this.stderrStream.write(errorMessage)
     } else {
-      process.stderr.write(errorMessage) // Fallback to standard error
+      process.stderr.write(errorMessage)
     }
   }
 }
