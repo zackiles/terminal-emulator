@@ -13,7 +13,7 @@ Click the **Fork** button at the top-right corner of the repository page to crea
 Clone the forked repository to your local machine:
 
 ```bash
-git clone https://github.com/zackilese/terminal-emulator.git
+git clone https://github.com/zackiles/terminal-emulator.git
 cd terminal-emulator
 ```
 

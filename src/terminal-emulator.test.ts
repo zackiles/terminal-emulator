@@ -6,12 +6,11 @@ import { Writable } from 'node:stream';
 class MockWritable extends Writable {
   data: string[] = [];
 
-  override _write(chunk: Buffer, encoding: BufferEncoding, callback: () => void) {
+  override _write(chunk: Buffer, _: unknown, callback: () => void) {
     this.data.push(chunk.toString());
     callback();
   }
 }
-
 type InputHandlerReturnType = string | object | Error | undefined;
 // Helper function to create a new terminal instance
 const createTerminal = (inputHandler: (input: string) => InputHandlerReturnType) => {
