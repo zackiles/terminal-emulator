@@ -1,6 +1,6 @@
 {
   "name": "@ai-tools/terminal-emulator",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A terminal-like interface for CLI applications.",
   "private": false,
   "homepage": "https://github.com/zackiles/terminal-emulator",
