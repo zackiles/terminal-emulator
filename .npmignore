@@ -11,6 +11,7 @@ node_modules
 tsconfig.json
 tsup.config.ts
 biome.json
+.npmrc
 .turbo
 turbo.json
 *.local

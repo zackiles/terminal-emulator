@@ -4,6 +4,9 @@
   "description": "A terminal-like interface for CLI applications.",
   "private": false,
   "homepage": "https://github.com/zackiles/terminal-emulator",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "url": "git+https://github.com/zackiles/terminal-emulator.git"
   },
@@ -36,7 +39,7 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.4",
     "@biomejs/biome": "^1.9.4",
-    "@changesets/cli": "^2.27.8",
+    "@changesets/cli": "^2.27.9",
     "@types/node": "^22.5.5",
     "tsup": "^8.3.0",
     "turbo": "^2.1.2",
@@ -44,6 +47,7 @@
     "vitest": "^2.1.1"
   },
   "dependencies": {
+    "pnpm": "^9.12.2",
     "zod": "^3.23.8"
   },
   "packageManager": "pnpm@9.9.0"

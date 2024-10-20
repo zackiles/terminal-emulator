@@ -6,7 +6,9 @@
 
 ## Introduction
 
-**TerminalEmulator** is a TypeScript library that provides a terminal-like interface for CLI (Command Line Interface) applications. It enables developers to integrate a simulated terminal environment, allowing users to interact with a familiar terminal UI. Whether you're building a CLI tool, a server application, or any interactive Node.js application, `TerminalEmulator` offers a robust and customizable solution for handling user inputs and displaying outputs seamlessly.
+**TerminalEmulator** is a TypeScript library that provides a terminal-like interface for CLI (Command Line Interface) applications. It enables a purely Javascript based terminal emulator that an AI agent can operate with. For example, if you have a CLI tool you'd like an AI agent to act on, you can import this library and turn your CLI into a full fledged terminal, prompting the agent to interact with the CLI like it would a regular terminal. Your calling CLI can then handle the input hook of this library to process the agents commands. Essenaitlly, this transforms your CLI script into something that resembles shell like you'd receive over SSH, including proper formatting of stdout, stderr, and terimnal resets, including a typical prompt like "user@user:~$" on new inputs.
+
+This library is standalone, but is intended to be used with [@ai-tools/virtual-shell](https://github.com/zackiles/virtual-shell), which is a fully emulated unix terminal command handler in Javascript that runs completely in memory with it's own virtual file system, and can be used as the input handler for commands given to this terminal-emulator, allowing you to handle typical unix commands like `ls`, `cd`, `cat`, `rm`, etc. completely in Javascript-land.
 
 ## Features
 
