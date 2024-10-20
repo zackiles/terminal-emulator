@@ -6,9 +6,11 @@
 
 ## Introduction
 
-**TerminalEmulator** is a TypeScript library that provides a terminal-like interface for CLI (Command Line Interface) applications. It enables a purely Javascript based terminal emulator that an AI agent can operate with. For example, if you have a CLI tool you'd like an AI agent to act on, you can import this library and turn your CLI into a full fledged terminal, prompting the agent to interact with the CLI like it would a regular terminal. Your calling CLI can then handle the input hook of this library to process the agents commands. Essenaitlly, this transforms your CLI script into something that resembles shell like you'd receive over SSH, including proper formatting of stdout, stderr, and terimnal resets, including a typical prompt like "user@user:~$" on new inputs.
+**TerminalEmulator** turn any backend script into a pure-Javascript terminal interface on-demand, on Linux, MacOS, and Windows. Handle user or agent input by passing a handler, or reading and writing to a Wirteable stream. It simulates the look and feel of a shell including proper formatting of stdout, stderr, and terminal resets, including a typical prompt like "user@user:~$" on new inputs.
 
-This library is standalone, but is intended to be used with [@ai-tools/virtual-shell](https://github.com/zackiles/virtual-shell), which is a fully emulated unix terminal command handler in Javascript that runs completely in memory with it's own virtual file system, and can be used as the input handler for commands given to this terminal-emulator, allowing you to handle typical unix commands like `ls`, `cd`, `cat`, `rm`, etc. completely in Javascript-land.
+**Note:** This library doesn't actually handle the shell commands, it returns the raw input of the user or agent prompt for your application to handle and return to the terminal's stdout or stderr.
+
+**Note:** This library is standalone, but is intended to be used with [@ai-tools/virtual-shell](https://github.com/zackiles/virtual-shell), which is a fully emulated unix terminal command handler (the thing that handles commens) in Javascript that runs completely in memory with it's own virtual file system, and can be used as the input handler for commands given to this terminal-emulator, allowing you to handle typical unix commands like `ls`, `cd`, `cat`, `rm`, etc. Used together and they essentially create a fully virtualized container that a user or AI agent can write, build, and test code in that can be interfaced with an emulated terminal - all in Javascript and all in memory. This is similar to Stackblitz but with access to native OS APIs.
 
 ## Features
 
