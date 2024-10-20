@@ -1,15 +1,15 @@
-import type { Writable } from 'node:stream';
-import readline from 'node:readline';
-import { exec } from 'node:child_process';
+import type { Writable } from 'node:stream'
+import readline from 'node:readline'
+import { exec } from 'node:child_process'
 
 /**
- * TerminalEmulator provides a terminal-like interface for CLI applications, allowing users 
- * to interact with a simulated terminal environment. It supports processing user input through 
- * a customizable input handler function, enabling the execution of commands and the return of 
- * various output types (string, object, or Error). The class also allows for the subscription 
- * of external writable streams for standard output (stdout) and standard error (stderr), 
- * facilitating integration with other output handling systems. Users can set the current user 
- * and directory for the terminal prompt, clear the terminal screen, and gracefully handle 
+ * TerminalEmulator provides a terminal-like interface for CLI applications, allowing users
+ * to interact with a simulated terminal environment. It supports processing user input through
+ * a customizable input handler function, enabling the execution of commands and the return of
+ * various output types (string, object, or Error). The class also allows for the subscription
+ * of external writable streams for standard output (stdout) and standard error (stderr),
+ * facilitating integration with other output handling systems. Users can set the current user
+ * and directory for the terminal prompt, clear the terminal screen, and gracefully handle
  * the Ctrl+C interrupt signal.
  *
  * Intended usage:
@@ -42,25 +42,25 @@ import { exec } from 'node:child_process';
  * Type for the input handler function.
  * It receives a string input and returns either a string, an object, or an Error.
  */
-type InputHandler = (input: string) => string | object | Error | undefined;
+type InputHandler = (input: string) => string | object | Error | undefined
 
 export class TerminalEmulator {
   // =======================
   // Public Properties
   // =======================
 
-  public user: string;
-  public currentDirectory: string;
+  public user: string
+  public currentDirectory: string
 
   // =======================
   // Private Properties
   // =======================
 
-  private inputHandler?: InputHandler;
-  private history: string[];
-  private rl: readline.Interface;
-  private stdoutStream: Writable | null = null; // Writable stream for stdout
-  private stderrStream: Writable | null = null; // Writable stream for stderr
+  private inputHandler?: InputHandler
+  private history: string[]
+  private rl: readline.Interface
+  private stdoutStream: Writable | null = null // Writable stream for stdout
+  private stderrStream: Writable | null = null // Writable stream for stderr
 
   // =======================
   // Public Methods
@@ -72,59 +72,55 @@ export class TerminalEmulator {
    * @param currentDirectory - The current directory for the terminal prompt. Defaults to '/'.
    * @param inputHandler - A function to handle user input. It receives the input and returns output.
    */
-  constructor(
-    user = 'guest',
-    currentDirectory = '/',
-    inputHandler?: InputHandler
-  ) {
-    this.user = user;
-    this.currentDirectory = currentDirectory;
-    this.inputHandler = inputHandler;
-    this.history = []; // Store input history
+  constructor(user = 'guest', currentDirectory = '/', inputHandler?: InputHandler) {
+    this.user = user
+    this.currentDirectory = currentDirectory
+    this.inputHandler = inputHandler
+    this.history = [] // Store input history
     this.rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
       prompt: `${this.user}@server:${this.currentDirectory}$ `,
-    });
-    this.clearScreen();
+    })
+    this.clearScreen()
 
     // Handle Ctrl+C
     process.on('SIGINT', () => {
-      this.handleSigint();
-    });
+      this.handleSigint()
+    })
   }
 
   /**
    * Starts the terminal emulator, displaying the prompt for user input.
    */
   public start(): void {
-    this.rl.prompt();
+    this.rl.prompt()
 
     this.rl
       .on('line', (input: string) => {
-        this.handleInput(input);
-        this.rl.prompt();
+        this.handleInput(input)
+        this.rl.prompt()
       })
       .on('close', () => {
-        this.exit();
-      });
+        this.exit()
+      })
   }
 
   /**
    * Clears the terminal screen and resets the input history.
    */
   public clearTerminal(): void {
-    this.clearScreen();
-    this.history = []; // Reset history
-    this.updatePrompt(); // Update prompt after clearing
+    this.clearScreen()
+    this.history = [] // Reset history
+    this.updatePrompt() // Update prompt after clearing
   }
 
   /**
    * Exits the terminal emulator.
    */
   public exit(): void {
-    this.writeToStdout('Exiting terminal emulator...'); // Use internal method for exit message
-    this.rl.close(); // Close readline interface
+    this.writeToStdout('Exiting terminal emulator...') // Use internal method for exit message
+    this.rl.close() // Close readline interface
   }
 
   /**
@@ -132,8 +128,8 @@ export class TerminalEmulator {
    * @param user - The new user name for the prompt.
    */
   public setUser(user: string): void {
-    this.user = user;
-    this.updatePrompt();
+    this.user = user
+    this.updatePrompt()
   }
 
   /**
@@ -141,8 +137,8 @@ export class TerminalEmulator {
    * @param directory - The new current directory for the prompt.
    */
   public setCurrentDirectory(directory: string): void {
-    this.currentDirectory = directory;
-    this.updatePrompt();
+    this.currentDirectory = directory
+    this.updatePrompt()
   }
 
   /**
@@ -150,7 +146,7 @@ export class TerminalEmulator {
    * @param stream - The stream to subscribe to.
    */
   public subscribeStdout(stream: Writable): void {
-    this.stdoutStream = stream;
+    this.stdoutStream = stream
   }
 
   /**
@@ -158,7 +154,7 @@ export class TerminalEmulator {
    * @param stream - The stream to subscribe to.
    */
   public subscribeStderr(stream: Writable): void {
-    this.stderrStream = stream;
+    this.stderrStream = stream
   }
 
   // =======================
@@ -170,13 +166,13 @@ export class TerminalEmulator {
    * @private
    */
   private clearScreen(): void {
-    const platform = process.platform;
-    const clearCommand = platform === 'win32' ? 'cls' : 'clear';
+    const platform = process.platform
+    const clearCommand = platform === 'win32' ? 'cls' : 'clear'
     exec(clearCommand, (err) => {
       if (err) {
-        this.writeToStderr(`Error clearing screen: ${err}`); // Write error to stderr
+        this.writeToStderr(`Error clearing screen: ${err}`) // Write error to stderr
       }
-    });
+    })
   }
 
   /**
@@ -186,18 +182,18 @@ export class TerminalEmulator {
    */
   private handleInput(input: string): void {
     // Store the input in history
-    this.history.push(input);
+    this.history.push(input)
 
     if (this.inputHandler) {
-      const output = this.inputHandler(input);
+      const output = this.inputHandler(input)
 
       // Check the type of the output
       if (this.isError(output)) {
-        this.printError(output);
+        this.printError(output)
       } else if (this.isPlainObject(output)) {
-        this.printObject(output);
+        this.printObject(output)
       } else if (typeof output === 'string') {
-        this.printOutput(output);
+        this.printOutput(output)
       }
     }
   }
@@ -209,7 +205,7 @@ export class TerminalEmulator {
    * @private
    */
   private isError(output: unknown): output is Error {
-    return output instanceof Error; // Check if output is an instance of Error
+    return output instanceof Error // Check if output is an instance of Error
   }
 
   /**
@@ -219,7 +215,7 @@ export class TerminalEmulator {
    * @private
    */
   private isPlainObject(output: unknown): output is object {
-    return output !== null && typeof output === 'object' && !Array.isArray(output); // Check for plain objects
+    return output !== null && typeof output === 'object' && !Array.isArray(output) // Check for plain objects
   }
 
   /**
@@ -228,8 +224,8 @@ export class TerminalEmulator {
    * @private
    */
   private printOutput(output: string): void {
-    this.writeToStdout(output); // Use internal method to handle stdout
-    this.updatePrompt();
+    this.writeToStdout(output) // Use internal method to handle stdout
+    this.updatePrompt()
   }
 
   /**
@@ -238,8 +234,8 @@ export class TerminalEmulator {
    * @private
    */
   private printError(error: Error): void {
-    this.writeToStderr(error.message); // Use internal method to handle stderr
-    this.updatePrompt();
+    this.writeToStderr(error.message) // Use internal method to handle stderr
+    this.updatePrompt()
   }
 
   /**
@@ -248,12 +244,12 @@ export class TerminalEmulator {
    * @private
    */
   private printObject(obj: object): void {
-    const objectString = JSON.stringify(obj, null, 2);
-    const lines = this.wrapText(objectString, 80);
+    const objectString = JSON.stringify(obj, null, 2)
+    const lines = this.wrapText(objectString, 80)
     for (const line of lines) {
-      this.writeToStdout(line);
+      this.writeToStdout(line)
     }
-    this.updatePrompt();
+    this.updatePrompt()
   }
 
   /**
@@ -264,9 +260,9 @@ export class TerminalEmulator {
    * @private
    */
   private wrapText(text: string, width: number): string[] {
-    const regex = new RegExp(`(.{1,${width}})(\\s|$)`, 'g');
-    const matches = text.match(regex);
-    return matches || [text]; // Match wrapped lines or return the original text as a single line
+    const regex = new RegExp(`(.{1,${width}})(\\s|$)`, 'g')
+    const matches = text.match(regex)
+    return matches || [text] // Match wrapped lines or return the original text as a single line
   }
 
   /**
@@ -274,8 +270,8 @@ export class TerminalEmulator {
    * @private
    */
   private updatePrompt(): void {
-    this.rl.setPrompt(`${this.user}@server:${this.currentDirectory}$ `);
-    this.rl.prompt();
+    this.rl.setPrompt(`${this.user}@server:${this.currentDirectory}$ `)
+    this.rl.prompt()
   }
 
   /**
@@ -283,10 +279,10 @@ export class TerminalEmulator {
    * @private
    */
   private handleSigint(): void {
-    this.rl.write('\n'); // Move to the next line
-    this.writeToStdout('(Press Ctrl+D to exit)'); // Write to stdout directly
-    this.rl.setPrompt(`${this.user}@server:${this.currentDirectory} (Press Ctrl+D to exit)$ `);
-    this.rl.prompt();
+    this.rl.write('\n') // Move to the next line
+    this.writeToStdout('(Press Ctrl+D to exit)') // Write to stdout directly
+    this.rl.setPrompt(`${this.user}@server:${this.currentDirectory} (Press Ctrl+D to exit)$ `)
+    this.rl.prompt()
   }
 
   /**
@@ -295,11 +291,11 @@ export class TerminalEmulator {
    * @private
    */
   private writeToStdout(message: string): void {
-    const outputMessage = `${message}\n`;
+    const outputMessage = `${message}\n`
     if (this.stdoutStream) {
-      this.stdoutStream.write(outputMessage); // Write to subscribed stream if available
+      this.stdoutStream.write(outputMessage) // Write to subscribed stream if available
     } else {
-      process.stdout.write(outputMessage); // Fallback to standard output
+      process.stdout.write(outputMessage) // Fallback to standard output
     }
   }
 
@@ -309,13 +305,13 @@ export class TerminalEmulator {
    * @private
    */
   private writeToStderr(message: string): void {
-    const errorMessage = `${message}\n`;
+    const errorMessage = `${message}\n`
     if (this.stderrStream) {
-      this.stderrStream.write(errorMessage); // Write to subscribed stream if available
+      this.stderrStream.write(errorMessage) // Write to subscribed stream if available
     } else {
-      process.stderr.write(errorMessage); // Fallback to standard error
+      process.stderr.write(errorMessage) // Fallback to standard error
     }
   }
 }
 
-export default TerminalEmulator;
+export default TerminalEmulator

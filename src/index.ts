@@ -1,2 +1,2 @@
-export * from './terminal-emulator';
-// export * from './types';
+export * from './terminal-emulator'
+export * from './types'
